@@ -4,7 +4,6 @@
 #include <assert.h>
 #include <math.h>
 
-
 #define MAX_X 1.0
 #define MAX_T 1.0
 #define PI 3.141592
@@ -18,6 +17,16 @@ void print_line(double *line, int n) {
         printf("%lf ", line[i]);
     }
     putchar('\n');
+}
+
+void print_grid(double **grid, int num_x, int num_t) {
+    int j;
+    for (; num_t >= 0; num_t--) {
+        for (j = 0; j <= num_x; j++) {
+            printf("%lf ", grid[num_t][j]);
+        }
+        putchar('\n');
+    }
 }
 
 double x_border_value(double x) {
@@ -59,6 +68,11 @@ int main(int argc, char* argv[]) {
     MPI_Comm_rank(MPI_COMM_WORLD,&rank);
     
     assert(size > 1);
+    
+    int should_print_grid = 1;
+    if (argc > 3 && argv[3][0] == '0') {
+        should_print_grid = 0;
+    }
     
     double start = MPI_Wtime();
     double elapsed_time;
@@ -116,7 +130,7 @@ int main(int argc, char* argv[]) {
         }
     }
     //Gathering results in the last process
-    
+    double time_calculating = MPI_Wtime() - start;
     int gatherer = size - 1;
     if (rank == gatherer) {
         double **grid = malloc(sizeof(double *) * (num_t + 1));
@@ -131,13 +145,10 @@ int main(int argc, char* argv[]) {
         }
         //Grid is ready
         elapsed_time = MPI_Wtime() - start;
-        for (i = num_t; i >= 0; i--) {
-            for (j = 0; j <= num_x; j++) {
-                printf("%lf ", grid[i][j]);
-            }
-            putchar('\n');
+        if (should_print_grid) {
+            print_grid(grid, num_x, num_t);
         }
-        printf("\nElapsed time: %.2fs\n", elapsed_time);
+        printf("\nElapsed time: %.2fs\nIncluding calculating time %.2fs\n", elapsed_time, time_calculating);
     }
     else {
         for (line = 0; line < lines_needed; line++) {

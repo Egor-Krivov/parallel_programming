@@ -9,6 +9,7 @@ while True:
         line = input()
         if line == "":
             print(input())
+            print(input())
             break;
         else:
             time_line = [float(s) for s in line.split()]

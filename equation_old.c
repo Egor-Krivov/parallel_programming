@@ -11,21 +11,11 @@
 
 #define P 1.0
 
-void print_grid(double **grid, int num_x, int num_t) {
-    int j;
-    for (; num_t >= 0; num_t--) {
-        for (j = 0; j <= num_x; j++) {
-            printf("%lf ", grid[num_t][j]);
-        }
-        putchar('\n');
-    }
-}
-
 double x_border_value(double x) {
-    x = PI * pow(x / MAX_X, 4.0);
-    x = fabs(sin(x));
-    x = pow(x, 3.0);
-    //x = sin(2 * PI * x / MAX_X);
+    //x = PI * pow(x / MAX_X, 4.0);
+    //x = fabs(sin(x));
+    //x = pow(x, 3.0);
+    x = sin(2 * PI * x / MAX_X);
     return x;
 }
 
@@ -47,12 +37,6 @@ double f(double x, double t) {
 
 int main(int argc, char* argv[]) {
     assert(argc > 2);
-    
-    int should_print_grid = 1;
-    if (argc > 3 && argv[3][0] == '0') {
-        should_print_grid = 0;
-    }
-    
     int num_x = atoi(argv[1]);
     int num_t = atof(argv[2]);
     assert(num_x > 2 && num_t > 2);
@@ -85,14 +69,18 @@ int main(int argc, char* argv[]) {
         
     clock_t end = clock();
     double elapsed_time = (end - start) / (double) CLOCKS_PER_SEC;
-    
-    if (should_print_grid) {
-        print_grid(grid, num_x, num_t);
+
+    for (i = num_t; i >= 0; i--) {
+        for (j = 0; j <= num_x; j++) {
+            printf("%lf ", grid[i][j]);
+        }
+        putchar('\n');
     }
-    
+
     for (i = 0; i <= num_t; i++) {
         free(grid[i]);
     }
     free(grid);
+    
     printf("\nElapsed time: %.2fs\n", elapsed_time);
 }
