@@ -22,15 +22,18 @@ void print_grid(double **grid, int num_x, int num_t) {
 }
 
 double x_border_value(double x) {
-    x = PI * pow(x / MAX_X, 4.0);
-    x = fabs(sin(x));
-    x = pow(x, 3.0);
+    //x = PI * pow(x / MAX_X, 4.0);
+    //x = fabs(sin(x));
+    //x = pow(x, 3.0);
     //x = sin(2 * PI * x / MAX_X);
+    //if (x == 0.0) {
+    //    return 1.0;
+    //}
     return x;
 }
 
 double t_border_value(double t) {
-    t *= pow(E, -P * t);
+    //t *= pow(E, -P * t);
     return t;
 }
 
@@ -42,7 +45,7 @@ double next_value(double left_value, double central_value, double f_value, doubl
 }
 
 double f(double x, double t) {
-    return 0;
+    return x * x + t;
 }
 
 int main(int argc, char* argv[]) {

@@ -30,15 +30,15 @@ void print_grid(double **grid, int num_x, int num_t) {
 }
 
 double x_border_value(double x) {
-    x = PI * pow(x / MAX_X, 4.0);
-    x = fabs(sin(x));
-    x = pow(x, 3.0);
+    //x = PI * pow(x / MAX_X, 4.0);
+    //x = fabs(sin(x));
+    //x = pow(x, 3.0);
     //x = sin(2 * PI * x / MAX_X);
     return x;
 }
 
 double t_border_value(double t) {
-    t *= pow(E, -P * t);
+    //t *= pow(E, -P * t);
     return t;
 }
 
@@ -50,7 +50,7 @@ double next_value_triangle(double left_value, double central_value, double f_val
 }
 
 double f(double x, double t) {
-    return 0;
+    return x * x + t;
 }
 int main(int argc, char* argv[]) {
     assert(argc > 2);
@@ -165,7 +165,7 @@ int main(int argc, char* argv[]) {
         if (should_print_grid) {
             print_grid(grid, num_x, num_t);
         }
-        printf("\nElapsed time: %.2fs\nIncluding calculating time %.2fs\n", elapsed_time, time_calculating);
+        printf("\nSize %d\n%dx%d\nElapsed time: %.2fs\nIncluding calculating time %.2fs\n", size, num_x, num_t, elapsed_time, time_calculating);
         
         for (i = 0; i <= num_t; i++) {
             free(grid[i]);
