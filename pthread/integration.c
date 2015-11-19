@@ -7,6 +7,7 @@
 #define MIN_X 1.0
 #define MAX_X 4.0
 
+
 struct thread_arg {
     double start;
     long sections;
