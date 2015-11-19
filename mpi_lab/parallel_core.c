@@ -11,7 +11,8 @@ int get_internal_limit() {
     else
         return ISIZE;
 }
-    
+
+
 int get_external_limit() {
     if (get_calculation_type() == HORIZONTAL)
         return ISIZE;
@@ -28,13 +29,13 @@ int main(int argc, char* argv[]) {
         print_results = 0;
     else
         print_results = 1;
-    
+
     MPI_Status status;
     MPI_Request request;
     MPI_Init(&argc, &argv);
     MPI_Comm_size(MPI_COMM_WORLD,&size);
     MPI_Comm_rank(MPI_COMM_WORLD,&rank);
-    
+
     // Choose thread count
     int parallelism = get_parallelism();
     if (rank >= parallelism) {
@@ -43,25 +44,27 @@ int main(int argc, char* argv[]) {
         return 0;
     }
     size = size > parallelism ? parallelism : size;
-    
-    
+    printf("parallelism is %d\n", parallelism);
+    fflush(stdout);
+
     int internal_limit = get_internal_limit();
     int external_limit = get_external_limit();
-    
+
     int i, j, k;
     int lines_per_thread = external_limit / parallelism + 1;
     double *periodic_lines[parallelism];
-    
-    
+
+
     double t1 = MPI_Wtime();
-    for (i = rank; i < parallelism; i += size)
+    for (i = rank; i < parallelism; i += size) {
         periodic_lines[i] = calculate_thread(i);
-    
+    }
+
     double t2 = MPI_Wtime();
-    
+
     printf("finished calculating %d\n", rank);
     fflush(stdout);
-    
+
     if (rank) {
         // Send data to the leader
         int dest = 0;
@@ -106,7 +109,7 @@ int main(int argc, char* argv[]) {
                 for (i = 0; i < internal_limit; i++) {
                     for (j = 0; j < external_limit; j++) {
                         line_period = j % parallelism;
-                        line = &periodic_lines[line_period][external_limit * (j / parallelism)];
+                        line = &periodic_lines[line_period][internal_limit * (j / parallelism)];
                         fprintf(ff, "%lf ", line[i]);
                     }
                     fprintf(ff, "\n");

@@ -5,11 +5,11 @@
 #include "../conventions.h"
 
 enum calculation_type get_calculation_type() {
-    return HORIZONTAL;
+    return VERTICAL;
 }
 
 int get_parallelism() {
-    return 3;
+    return 5;
 }
 
 
@@ -23,14 +23,20 @@ double *calculate_thread(int thread) {
     int rows = external_lim / parallelism + 1;
     double *data = (double *) malloc(sizeof(double) * internal_lim * rows);
     int i, j, k;
-    
+
     for (i = thread, k = 0; i < external_lim; i += parallelism, k++)
         for (j = 0; j < internal_lim; j++)
-            data[internal_lim * k + j] = 10 * i + j;
+            data[internal_lim * k + j] = 0;
 
+    double val;
     for (i = thread + parallelism, k = 1; i < external_lim; i += parallelism, k++)
-        for (j = 0; j < internal_lim - 2; j++)
-            data[k*internal_lim + j] = sin(MUL*data[(k-1)*internal_lim + j + 2]);
+        for (j = 0; j < internal_lim - 3; j++) {
+            val = 10 * (j+3) + (i-5);
+            val = sin(MUL * val);
+            //data[k*internal_lim + j] = val[j+3][i-5]
+            data[k*internal_lim + j] = val * 3;
+            //sin(MUL*data[(k-1)*internal_lim + j + 2]);
+        }
 
     return data;
 }

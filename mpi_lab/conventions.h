@@ -13,7 +13,3 @@ int get_internal_limit();
 int get_external_limit();
 
 double *calculate_thread(int thread);
-
-
-
-
